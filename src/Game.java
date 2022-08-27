@@ -10,7 +10,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
 
     ImageIcon plate = new ImageIcon("plate.png");
     JLabel plateP1;                     //for player 1
-    JLabel plateP2;              //for player 2
+    JLabel plateP2;                     //for player 2
     Timer timer;                        //game Timer
     Random random = new Random();
     boolean play = true;
