@@ -18,9 +18,12 @@ use Arrow DOWN - To Move Down
 -- For Player 2 --
 
 use W - To Move Up
+
 use S - To Move Down
  
 
 USE X -> To Toggle Compter For Player 2
+
 USE D -> To change difficulty level
+
 USE 'SPACE' to Simulate Game
