@@ -13,7 +13,9 @@ public class Game extends JPanel implements KeyListener, ActionListener {
     JLabel plateP2;                     //for player 2
     Timer timer;                        //game Timer
     Random random = new Random();
-    boolean play = true;
+    AutoPlay autoPlay;
+    AutoPlay sim;
+    boolean play = true, doublePlayer=false, simulate=false;
 
     static int ballPosX, ballPosY, ballSpeedX, ballSpeedY, ballSpeed;
 
@@ -35,8 +37,9 @@ public class Game extends JPanel implements KeyListener, ActionListener {
         timer = new Timer(30,this);
         timer.start();
 
-        //new AutoPlay(plateP2,2);
-        //new AutoPlay(plateP1,1);
+        autoPlay = new AutoPlay(plateP2,2);
+        sim = new AutoPlay(plateP1,1);
+
 
         this.add(plateP1);
         this.add(plateP2);
@@ -56,6 +59,30 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             g2d.drawString("GAME OVER",250,250);
             g2d.setPaint(Color.white);
             g2d.drawString("PRESS SPACE TO RESTART",60,380);
+        }
+
+        if(doublePlayer){
+            g2d.setPaint(Color.green);
+            g2d.setFont(new Font(null,Font.BOLD,10));
+            g2d.drawString("Computer",720,20);
+
+            switch (autoPlay.difficulty){
+                case 0->{
+                    g2d.drawString("Easy",720,30);
+                }
+                case 1->{
+                    g2d.setPaint(Color.yellow);
+                    g2d.drawString("Medium",720,30);
+                }
+                case 2->{
+                    g2d.setPaint(Color.red);
+                    g2d.drawString("Hard",720,30);
+                }
+                case 10-> {
+                    g2d.setPaint(Color.WHITE);
+                    g2d.drawString("Simulate",720,30);
+                }
+            }
         }
 
     }
@@ -87,13 +114,13 @@ public class Game extends JPanel implements KeyListener, ActionListener {
 
             case 87-> {
                 //W
-                if(plateP2.getY()>5)
+                if(plateP2.getY()>5&&!doublePlayer)
                     plateP2.setBounds(plateP2.getX(),plateP2.getY()-18,10,60);
             }
 
             case 83-> {
                 //S
-                if(plateP2.getY()<405)
+                if(plateP2.getY()<405&!doublePlayer)
                     plateP2.setBounds(plateP2.getX(),plateP2.getY()+18,10,60);
             }
             case 32-> {
@@ -103,10 +130,22 @@ public class Game extends JPanel implements KeyListener, ActionListener {
                     defaultValues();
                     timer.start();
                 }
+                else{
+                    simulateGame();
+                }
             }
 
             case 88-> {
                 //X
+                doublePlayer=!doublePlayer;
+                autoPlay.difficulty=1;
+                if(doublePlayer) autoPlay.start();
+                else autoPlay.stop();
+            }
+
+            case 68-> {
+                //D
+                autoPlay.setDifficulty();
             }
         }
 
@@ -135,12 +174,14 @@ public class Game extends JPanel implements KeyListener, ActionListener {
         if(ballPosX<10) {
             play = false;
             timer.stop();
+            if(simulate) simulateGame();
         }
 
         //win case
         if(ballPosX>770){
             play = false;
             timer.stop();
+            if(simulate) simulateGame();
         }
 
         //for Y-Direction
@@ -153,7 +194,6 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             ballPosY+=ballSpeedY;
             ballSpeedY*=-1;
         }
-
         repaint();
     }
 
@@ -165,5 +205,24 @@ public class Game extends JPanel implements KeyListener, ActionListener {
         ballPosY=200;
         ballSpeedX=-ballSpeed;
         ballSpeedY=ballSpeed;
+    }
+
+    void simulateGame(){
+        simulate=!simulate;
+        if(simulate){
+            doublePlayer=true;
+            autoPlay.start();
+            sim.start();
+            sim.difficulty=10;
+            autoPlay.difficulty=10;
+            ballSpeedX*=2;
+            ballSpeedY*=2;
+        }else {
+            doublePlayer=false;
+            autoPlay.difficulty=8;
+            autoPlay.stop();
+            sim.stop();
+            defaultValues();
+        }
     }
 }
