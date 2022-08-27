@@ -22,6 +22,7 @@ use W - To Move Up
 
 use S - To Move Down
  
+---GENERAL CONTROLS---
 
 USE X -> To Toggle Compter For Player 2
 
