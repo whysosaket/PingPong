@@ -12,6 +12,7 @@ when Playing 2 Players,
 -- For Player 1 --
 
 use Arrow UP - To Move Up
+
 use Arrow DOWN - To Move Down
 
 
