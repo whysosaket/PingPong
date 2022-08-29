@@ -3,8 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AutoPlay implements ActionListener {
-    //This script automates right side plate
-    int expectedPosX, expectedPosY;
     private Timer timer;
     JLabel label;
     int player,curPosX,curPosY,curSpeedX,curSpeedY,steps,difficulty=2;
@@ -20,7 +18,7 @@ public class AutoPlay implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         curPosX= Game.ballPosX;
         curSpeedX = Game.ballSpeedX;
-        if(player==2&&curPosX>400&&curSpeedX<0||player==1&&curPosX<400&&curSpeedX>0) {
+        if(player==2&&curPosX>Main.frame.getWidth()/2&&curSpeedX<0||player==1&&curPosX<Main.frame.getWidth()/2&&curSpeedX>0) {
             move=true;
             calculate();
         }else move=false;

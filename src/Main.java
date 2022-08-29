@@ -1,10 +1,11 @@
 import javax.swing.*;
 
 public class Main {
+    static JFrame frame;
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Ping Pong");
+        frame = new JFrame("Ping Pong");
         frame.setDefaultCloseOperation(3);
-        frame.setSize(800,500);
+        frame.setSize(1000,500);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
