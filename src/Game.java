@@ -104,7 +104,6 @@ public class Game extends JPanel implements KeyListener, ActionListener {
                 case 8-> g2d.drawString("Speed: "+4,920,450);
                 case 10-> g2d.drawString("Speed: "+5,920,450);
                 case 12-> g2d.drawString("Speed: "+6,920,450);
-                case 14-> g2d.drawString("Speed: "+7,920,450);
             }
 
         }
@@ -369,7 +368,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
     }
 
     void ballSpeed(){
-        ballSpeed=(ballSpeed+1)%14+1;
+        ballSpeed=(ballSpeed+1)%12+1;
         ballSpeedX=(ballSpeedX/Math.abs(ballSpeedX))*ballSpeed;
         ballSpeedY=(ballSpeedY/Math.abs(ballSpeedY))*ballSpeed;
     }
