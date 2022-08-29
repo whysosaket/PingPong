@@ -11,13 +11,17 @@ public class Game extends JPanel implements KeyListener, ActionListener {
     ImageIcon plate = new ImageIcon("plate.png");
     JLabel plateP1;                     //for player 1
     JLabel plateP2;                     //for player 2
-    Timer timer;                        //game Timer
+    Timer timer;                        //game Timerz
     Random random = new Random();
     AutoPlay autoPlay;
     AutoPlay sim;
     boolean play = true, doublePlayer=false, simulate=false;
 
-    static int ballPosX, ballPosY, ballSpeedX, ballSpeedY, ballSpeed;
+    static int ballPosX, ballPosY, ballSpeedX, ballSpeedY, ballSpeed=6;
+
+    // for animation
+    boolean moveDown = false; int downTarget=0;
+    boolean moveUp = false; int upTarget=0;
 
     Game(){
         this.setBackground(Color.BLACK);
@@ -59,6 +63,16 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             g2d.drawString("GAME OVER",250,250);
             g2d.setPaint(Color.white);
             g2d.drawString("PRESS SPACE TO RESTART",60,380);
+        }else if(!simulate) {
+            g2d.setFont(new Font(null,Font.BOLD,10));
+            switch (ballSpeed){
+                case 2-> g2d.drawString("Speed: "+1,720,450);
+                case 4-> g2d.drawString("Speed: "+2,720,450);
+                case 6-> g2d.drawString("Speed: "+3,720,450);
+                case 8-> g2d.drawString("Speed: "+4,720,450);
+                case 10-> g2d.drawString("Speed: "+5,720,450);
+            }
+
         }
 
         if(doublePlayer){
@@ -103,13 +117,19 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             }
             case 40-> {
                 //down
-                if(plateP1.getY()<405)
-                plateP1.setBounds(plateP1.getX(),plateP1.getY()+18,10,60);
+                if(plateP1.getY()<405){
+                    moveDown=true;
+                    downTarget=plateP1.getY()+18;
+                }
+                //plateP1.setBounds(plateP1.getX(),plateP1.getY()+18,10,60);
             }
             case 38-> {
                 //up
-                if(plateP1.getY()>5)
-                plateP1.setBounds(plateP1.getX(),plateP1.getY()-18,10,60);
+                if(plateP1.getY()>5){
+                    moveUp=true;
+                    upTarget=plateP1.getY()-18;
+                }
+                //plateP1.setBounds(plateP1.getX(),plateP1.getY()-18,10,60);
             }
 
             case 87-> {
@@ -120,7 +140,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
 
             case 83-> {
                 //S
-                if(plateP2.getY()<405&!doublePlayer)
+                if(plateP2.getY()<405&&doublePlayer)
                     plateP2.setBounds(plateP2.getX(),plateP2.getY()+18,10,60);
             }
             case 32-> {
@@ -146,6 +166,12 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             case 68-> {
                 //D
                 autoPlay.setDifficulty();
+            }
+
+            case 66-> {
+                ballSpeed=(ballSpeed+1)%10+1;
+                ballSpeedX=(ballSpeedX/Math.abs(ballSpeedX))*ballSpeed;
+                ballSpeedY=(ballSpeedY/Math.abs(ballSpeedY))*ballSpeed;
             }
         }
 
@@ -194,11 +220,26 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             ballPosY+=ballSpeedY;
             ballSpeedY*=-1;
         }
+
+        //moving plates down
+        if(moveDown){
+            moveUp=false;
+            if(plateP1.getY()<downTarget)
+            plateP1.setBounds(plateP1.getX(),plateP1.getY()+7,10,60);
+            else moveDown=false;
+        }
+
+        if(moveUp){
+            moveDown=false;
+            if(plateP1.getY()>upTarget)
+                plateP1.setBounds(plateP1.getX(),plateP1.getY()-7,10,60);
+            else moveUp=false;
+        }
+
         repaint();
     }
 
     private void defaultValues(){
-        ballSpeed=6;
         plateP1.setBounds(20,170,10,60);
         plateP2.setBounds(770,250,10,60);
         ballPosX=random.nextInt(200,400);

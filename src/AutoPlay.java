@@ -11,7 +11,7 @@ public class AutoPlay implements ActionListener {
     boolean move=false;
     AutoPlay(JLabel label, int player){
         //setting up timer
-        timer = new Timer(30,this);
+        timer = new Timer(5,this);
         this.label=label;
         this.player=player;
     }
@@ -26,10 +26,10 @@ public class AutoPlay implements ActionListener {
         }else move=false;
 
         if(move) {
-                if(label.getY()<curPosY+curSpeedY*steps) {
+                if(label.getY()<curPosY+curSpeedY*steps-getDifficulty()) {
                     label.setBounds(label.getX(),label.getY()+getDifficulty(),label.getWidth(),label.getHeight());
-                } else if (label.getY()>curPosY+curSpeedY*steps) {
-                    label.setBounds(label.getX(),label.getY()-getDifficulty(),label.getWidth(),label.getHeight());
+                } else if (label.getY()>curPosY+curSpeedY*steps+getDifficulty()) {
+                    label.setBounds(label.getX(), label.getY() - getDifficulty(), label.getWidth(), label.getHeight());
                 }
         }
     }
@@ -57,10 +57,10 @@ public class AutoPlay implements ActionListener {
     int getDifficulty(){
         int speed=0;
         switch (difficulty){
-            case 0-> speed=6;
-            case 1-> speed=8;
-            case 2-> speed=9;
-            case 10-> speed=16;
+            case 0-> speed=1;
+            case 1-> speed=2;
+            case 2-> speed=3;
+            case 10-> speed=4;
         }
         return speed;
     }
