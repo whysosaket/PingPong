@@ -29,3 +29,5 @@ USE X -> To Toggle Compter For Player 2
 USE D -> To change difficulty level
 
 USE 'SPACE' to Simulate Game
+
+USE 'B' to change Ball speed
