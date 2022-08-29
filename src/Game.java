@@ -11,18 +11,21 @@ public class Game extends JPanel implements KeyListener, ActionListener {
     ImageIcon plate = new ImageIcon("plate.png");
     JLabel plateP1;                     //for player 1
     JLabel plateP2;                     //for player 2
-    Timer timer;                        //game Timerz
+    Timer timer;                        //game Timer
     Random random = new Random();
     AutoPlay autoPlay;
     AutoPlay sim;
-    boolean play = true, doublePlayer=false, simulate=false;
+    boolean play = true, doublePlayer=true, simulate=false;
 
     static int ballPosX, ballPosY, ballSpeedX, ballSpeedY, ballSpeed=6;
 
-    // for animation
-    boolean moveDown = false; int downTarget=0;
-    boolean moveUp = false; int upTarget=0;
+    // for animation player 1
+    boolean moveDownP1 = false; int downTargetP1 =0;
+    boolean moveUpP1 = false; int upTargetP1 =0;
 
+    // for animation player 2
+    boolean moveDownP2 = false; int downTargetP2 =0;
+    boolean moveUpP2 = false; int upTargetP2 =0;
     Game(){
         this.setBackground(Color.BLACK);
         this.setLayout(null);
@@ -58,6 +61,15 @@ public class Game extends JPanel implements KeyListener, ActionListener {
         g2d.fillOval(ballPosX,ballPosY,30,30);
 
         if(!play){
+            g2d.setFont(new Font(null,Font.BOLD,10));
+            //controls
+            g2d.drawString("Use UP/DOWN Arrow Keys to Move Plate 1",300,50);
+            g2d.drawString("Use W/S Arrow Keys to Move Plate 2",300,70);
+            g2d.drawString("Use 'X' to Toggle Computer as Player 2",300,90);
+            g2d.drawString("Use 'D' to change difficulty levels",300,110);
+            g2d.drawString("Use 'B' to change ball speed",300,130);
+            g2d.drawString("Use 'SPACE' to Simulate Game",300,150);
+
             g2d.setPaint(Color.red);
             g2d.setFont(new Font(null,Font.BOLD,50));
             g2d.drawString("GAME OVER",250,250);
@@ -75,7 +87,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
 
         }
 
-        if(doublePlayer){
+        if(!doublePlayer){
             g2d.setPaint(Color.green);
             g2d.setFont(new Font(null,Font.BOLD,10));
             g2d.drawString("Computer",720,20);
@@ -118,30 +130,32 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             case 40-> {
                 //down
                 if(plateP1.getY()<405){
-                    moveDown=true;
-                    downTarget=plateP1.getY()+18;
+                    moveDownP1 =true;
+                    downTargetP1 =plateP1.getY()+18;
                 }
-                //plateP1.setBounds(plateP1.getX(),plateP1.getY()+18,10,60);
             }
             case 38-> {
                 //up
                 if(plateP1.getY()>5){
-                    moveUp=true;
-                    upTarget=plateP1.getY()-18;
+                    moveUpP1 =true;
+                    upTargetP1 =plateP1.getY()-18;
                 }
-                //plateP1.setBounds(plateP1.getX(),plateP1.getY()-18,10,60);
             }
 
             case 87-> {
                 //W
-                if(plateP2.getY()>5&&!doublePlayer)
-                    plateP2.setBounds(plateP2.getX(),plateP2.getY()-18,10,60);
+                if(plateP2.getY()>5&&doublePlayer){
+                    moveUpP2 =true;
+                    upTargetP2 =plateP2.getY()-18;
+                }
             }
 
             case 83-> {
                 //S
-                if(plateP2.getY()<405&&doublePlayer)
-                    plateP2.setBounds(plateP2.getX(),plateP2.getY()+18,10,60);
+                if(plateP2.getY()<405&&doublePlayer){
+                    moveDownP2 =true;
+                    downTargetP2 =plateP2.getY()+18;
+                }
             }
             case 32-> {
                 //space
@@ -157,10 +171,10 @@ public class Game extends JPanel implements KeyListener, ActionListener {
 
             case 88-> {
                 //X
-                doublePlayer=!doublePlayer;
                 autoPlay.difficulty=1;
                 if(doublePlayer) autoPlay.start();
                 else autoPlay.stop();
+                doublePlayer=!doublePlayer;
             }
 
             case 68-> {
@@ -221,19 +235,34 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             ballSpeedY*=-1;
         }
 
-        //moving plates down
-        if(moveDown){
-            moveUp=false;
-            if(plateP1.getY()<downTarget)
+        //moving plate 1
+        if(moveDownP1){
+            moveUpP1 =false;
+            if(plateP1.getY()< downTargetP1)
             plateP1.setBounds(plateP1.getX(),plateP1.getY()+7,10,60);
-            else moveDown=false;
+            else moveDownP1 =false;
         }
 
-        if(moveUp){
-            moveDown=false;
-            if(plateP1.getY()>upTarget)
+        if(moveUpP1){
+            moveDownP1 =false;
+            if(plateP1.getY()> upTargetP1)
                 plateP1.setBounds(plateP1.getX(),plateP1.getY()-7,10,60);
-            else moveUp=false;
+            else moveUpP1 =false;
+        }
+
+        // moving plate 2
+        if(moveDownP2){
+            moveUpP2 =false;
+            if(plateP2.getY()< downTargetP2)
+                plateP2.setBounds(plateP2.getX(),plateP2.getY()+7,10,60);
+            else moveDownP2 =false;
+        }
+
+        if(moveUpP2){
+            moveDownP2 =false;
+            if(plateP2.getY()> upTargetP2)
+                plateP2.setBounds(plateP2.getX(),plateP2.getY()-7,10,60);
+            else moveUpP2 =false;
         }
 
         repaint();
@@ -251,7 +280,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
     void simulateGame(){
         simulate=!simulate;
         if(simulate){
-            doublePlayer=true;
+            doublePlayer=false;
             autoPlay.start();
             sim.start();
             sim.difficulty=10;
@@ -259,7 +288,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             ballSpeedX*=2;
             ballSpeedY*=2;
         }else {
-            doublePlayer=false;
+            doublePlayer=true;
             autoPlay.difficulty=8;
             autoPlay.stop();
             sim.stop();
