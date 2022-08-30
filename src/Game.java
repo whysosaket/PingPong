@@ -17,7 +17,8 @@ public class Game extends JPanel implements KeyListener, ActionListener {
     AutoPlay sim;
     boolean play = false, doublePlayer=true, simulate=false, win, lose;
 
-    static int ballPosX, ballPosY, ballSpeedX, ballSpeedY, ballSpeed=6;
+    static int ballPosX, ballPosY, ballSpeedX, ballSpeedY, ballSpeed=8;
+    final int resetSpeed=6;
     private int pointsP1, pointsP2;
 
     // for animation player 1
@@ -73,6 +74,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             g2d.drawString("Use 'D' to change difficulty levels",400,110);
             g2d.drawString("Use 'B' to change ball speed",400,130);
             g2d.drawString("Use 'SPACE' to Simulate Game",400,150);
+            g2d.drawString("Use 'R' to Reset Game",400,170);
 
             g2d.setFont(new Font(null,Font.BOLD,50));
             if(lose&&!doublePlayer) {
@@ -104,6 +106,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
                 case 8-> g2d.drawString("Speed: "+4,920,450);
                 case 10-> g2d.drawString("Speed: "+5,920,450);
                 case 12-> g2d.drawString("Speed: "+6,920,450);
+                case 14-> g2d.drawString("Speed: "+7,920,450);
             }
 
         }
@@ -158,19 +161,19 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             case 40-> {
                 //down
                 moveDownP1 =true;
-                downTargetP1 =plateP1.getY()+18;
+                downTargetP1 =plateP1.getY()+19+ballSpeed;
             }
             case 38-> {
                 //up
                 moveUpP1 =true;
-                upTargetP1 =plateP1.getY()-18;
+                upTargetP1 =plateP1.getY()-19-ballSpeed;
             }
 
             case 87-> {
                 //W
                 if(doublePlayer) {
                     moveUpP2 = true;
-                    upTargetP2 = plateP2.getY() - 18;
+                    upTargetP2 = plateP2.getY() - 19-ballSpeed;
                 }
             }
 
@@ -178,7 +181,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
                 //S
                 if(doublePlayer) {
                     moveDownP2 = true;
-                    downTargetP2 = plateP2.getY() + 18;
+                    downTargetP2 = plateP2.getY() + 19+ballSpeed;
                 }
             }
             case 32-> {
@@ -209,8 +212,10 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             }
 
             case 66-> {
+                //B
                 ballSpeed();
             }
+            case 82-> defaultValues();
         }
 
     }
@@ -234,13 +239,12 @@ public class Game extends JPanel implements KeyListener, ActionListener {
     private void defaultValues(){
         win=false;
         lose=false;
-        ballSpeed=6;
         pointsP1=0;
         pointsP2=0;
         plateP1.setBounds(20,170,10,60);
         plateP2.setBounds(970,250,10,60);
-        ballSpeedX=-ballSpeed;
-        ballSpeedY=ballSpeed;
+        ballSpeedX=-resetSpeed;
+        ballSpeedY=resetSpeed;
         resetBall();
     }
 
@@ -292,18 +296,21 @@ public class Game extends JPanel implements KeyListener, ActionListener {
     void resetBall(){
         ballPosX=Main.frame.getWidth()/2;
         ballPosY=random.nextInt(30,400);
-        ballSpeedX=-ballSpeedX;
+        ballSpeedX=((ballSpeedX)/Math.abs(ballSpeedX))*-1*resetSpeed;
+        ballSpeedY=((ballSpeedY)/Math.abs(ballSpeedY))*-1*resetSpeed;
     }
 
     void checkCollision(){
-        if(new Rectangle(plateP1.getX(),plateP1.getY(),plateP1.getWidth(),plateP1.getHeight()).intersects(new Rectangle(ballPosX,ballPosY,30,30))){
-            ballSpeedX*=-1;
-        }
+        collision(plateP1);
+        collision(plateP2);
 
-        if(new Rectangle(plateP2.getX(),plateP2.getY(),plateP2.getWidth(),plateP2.getHeight()).intersects(new Rectangle(ballPosX,ballPosY,30,30))){
-            ballSpeedX*=-1;
-        }
+    }
 
+    private void collision(JLabel plateP) {
+        if(new Rectangle(plateP.getX(), plateP.getY(), plateP.getWidth(), plateP.getHeight()).intersects(new Rectangle(ballPosX,ballPosY,30,30))){
+            ballSpeedX=((ballSpeedX)/Math.abs(ballSpeedX))*-1*ballSpeed;
+            ballSpeedY=((ballSpeedY)/Math.abs(ballSpeedY))*ballSpeed;
+        }
     }
 
     void moveBall(){
@@ -368,7 +375,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
     }
 
     void ballSpeed(){
-        ballSpeed=(ballSpeed+1)%12+1;
+        ballSpeed=(ballSpeed+1)%14+1;
         ballSpeedX=(ballSpeedX/Math.abs(ballSpeedX))*ballSpeed;
         ballSpeedY=(ballSpeedY/Math.abs(ballSpeedY))*ballSpeed;
     }

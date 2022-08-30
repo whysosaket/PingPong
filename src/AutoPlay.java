@@ -57,7 +57,7 @@ public class AutoPlay implements ActionListener {
         switch (difficulty){
             case 0-> speed=1;
             case 1-> speed=2;
-            case 2-> speed=3;
+            case 2-> speed=3+Game.ballSpeed%11;
             case 10-> speed=4;
         }
         return speed;
